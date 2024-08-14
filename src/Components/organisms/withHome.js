@@ -7,7 +7,6 @@ const withHomeLayout = (WrappedComponent) => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-      // Clear authentication state
       props.setIsAuthenticated(false);
       navigate('/login');
     };

@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import './Components/styles.css';
 import Login from './Screens/auth/Login';
 import Home from './Screens/home/Home';
-import { AppProvider } from './Components/AppContext'; // Adjust the import path as needed
+import { AppProvider } from './Components/AppContext'; 
 import ErrorBoundary from './Components/organisms/ErrorBoundary';
 import { loginSuccess, logout } from './store/actions/authAction';
 
