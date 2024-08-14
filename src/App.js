@@ -1,25 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import './Components/styles.css';
+import Login from './Screens/auth/Login';
+import Home from './Screens/home/Home';
+import { AppProvider } from './Components/AppContext'; // Adjust the import path as needed
+import ErrorBoundary from './Components/organisms/ErrorBoundary';
+import { loginSuccess, logout } from './store/actions/authAction';
 
-function App() {
+const App = () => {
+  const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
+  const dispatch = useDispatch();
+
+  const handleLogin = () => {
+    dispatch(loginSuccess());
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AppProvider>
+      <ErrorBoundary>
+        <Router>
+          <div className="App">
+            <Routes>
+                <Route path="/*" element={<Home setIsAuthenticated={handleLogout} />} />
+                <Route path="*" element={<Navigate to="/" />} />
+              </Routes>
+          </div>
+        </Router>
+      </ErrorBoundary>
+    </AppProvider>
   );
-}
+};
 
 export default App;
