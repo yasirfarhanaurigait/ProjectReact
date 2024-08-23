@@ -11,8 +11,7 @@ export const AppProvider = ({ children }) => {
     useEffect(() => {
         const loadUsers = async () => {
             try {
-                const usersData = await fetchUsers();
-                console.log('Fetched users:', usersData);  
+                const usersData = await fetchUsers(); 
                 setUsers(usersData);
             } catch (error) {
                 console.error('Failed to fetch users:', error);
@@ -20,6 +19,18 @@ export const AppProvider = ({ children }) => {
         };
 
         loadUsers();
+        const loadBlog = async () => {
+            try {
+                const blogsData = await fetchBlogs(); 
+                setBlogs(blogsData);
+            } catch (error) {
+                console.error('Failed to fetch users:', error);
+            }
+        };
+        
+
+        loadUsers();
+        loadBlog();
     }, []);
 
     return (

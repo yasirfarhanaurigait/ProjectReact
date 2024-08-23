@@ -1,20 +1,56 @@
-import { LOGIN_SUCCESS, LOGOUT } from '../actions/authAction';
 
+import Cookies from 'js-cookie';
 const initialState = {
-  isAuthenticated: false,
+  isAuthenticated: !!Cookies.get('userToken'),
+  user: null,
+  error: null,
 };
-
 const authReducer = (state = initialState, action) => {
   switch (action.type) {
-    case LOGIN_SUCCESS:
+    case 'LOGIN_SUCCESS':
       return {
         ...state,
         isAuthenticated: true,
+        user: action.payload,
       };
-    case LOGOUT:
+    case 'SIGNUP_SUCCESS':
+      return {
+        ...state,
+        isAuthenticated: true,
+        user: action.payload,
+        error: null,
+      };
+      case 'LOGIN_FAILURE':
+        return {
+          ...state,
+          isAuthenticated: false,
+          error: action.payload,
+        };
+    case 'SIGNUP_FAILURE':
       return {
         ...state,
         isAuthenticated: false,
+        error: action.payload,
+      };
+      case 'LOGOUT_SUCCESS':
+        return {
+          ...state,
+          isAuthenticated: false,
+          user: null,
+        };
+        case 'SET_AUTHENTICATED':
+      return {
+        ...state,
+        isAuthenticated: true,
+        name: action.payload.name,
+        email: action.payload.email,
+      };
+      case 'SET_USER':
+      return {
+        ...state,
+        displayName: action.payload.displayName,
+        email: action.payload.email,
+        uid: action.payload.uid,
       };
     default:
       return state;

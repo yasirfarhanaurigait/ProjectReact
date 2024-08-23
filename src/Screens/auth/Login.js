@@ -1,43 +1,28 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { login } from '../../store/actions/authAction';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import '../../Components/login.css';
-import { loginSuccess } from '../../store/actions/authAction';
+import { Link, useNavigate } from 'react-router-dom';
 
-const Login = ({ setIsAuthenticated }) => {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const authError = useSelector((state) => state.auth.error);
+  const navigate = useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();
-    let valid = true;
-    if (email !== 'yasir@gmail.com') {
-      setEmailError('Invalid email');
-      valid = false;
-    } else {
-      setEmailError('');
-    }
-
-    if (password !== 'Test@123') {
-      setPasswordError('Invalid password');
-      valid = false;
-    } else {
-      setPasswordError('');
-    }
-
-    if (valid) {
-      dispatch(loginSuccess());
-      setIsAuthenticated(true);
-      navigate('/');
-      console.log("login success");
-    }
+    dispatch(login(email, password))
+      .then(() => {
+        console.log("loginSucess")
+        navigate('/');
+      })
+      .catch((error) => {
+        console.error('Login failed:', error.message);
+      });
   };
 
   return (
@@ -50,11 +35,9 @@ const Login = ({ setIsAuthenticated }) => {
             type="email" 
             value={email} 
             onChange={(e) => setEmail(e.target.value)}
-            className={emailError ? 'input-error' : ''}
-            title={emailError}
+            className={authError ? 'input-error' : ''}
             required 
           />
-          {emailError && <div className="error-message">{emailError}</div>}
         </div>
         <div className="form-group">
           <label>Password</label>
@@ -63,8 +46,7 @@ const Login = ({ setIsAuthenticated }) => {
               type={showPassword ? 'text' : 'password'} 
               value={password} 
               onChange={(e) => setPassword(e.target.value)}
-              className={passwordError ? 'input-error' : ''}
-              title={passwordError}
+              className={authError ? 'input-error' : ''}
               required 
             />
             <span
@@ -74,10 +56,13 @@ const Login = ({ setIsAuthenticated }) => {
               <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
             </span>
           </div>
-          {passwordError && <div className="error-message">{passwordError}</div>}
         </div>
+        {authError && <div className="error-message">{authError}</div>}
         <button className="button-login" type="submit">Login</button>
       </form>
+      <div className="signup-link">
+        <p>Don't have an account? <Link to="/signup">Sign Up</Link></p>
+      </div>
     </div>
   );
 };
